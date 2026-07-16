@@ -4,7 +4,7 @@
 
 ##### 🔗 \*\*Live demo:\*\* https://ai-code-review-assistant-jet.vercel.app
 
-##### 🔗 \*\*Backend API:\*\* https://ai-code-review-backend-ycow.onrender.com
+🔗 **Backend API:** https://ai-code-review-backend-ycow.onrender.com/api/health
 
 
 
