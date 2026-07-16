@@ -2,9 +2,9 @@
 
 
 
-🔗 \*\*Live demo:\*\* https://ai-code-review-assistant-jet.vercel.app
+##### 🔗 \*\*Live demo:\*\* https://ai-code-review-assistant-jet.vercel.app
 
-🔗 \*\*Backend API:\*\* https://ai-code-review-backend-ycow.onrender.com
+##### 🔗 \*\*Backend API:\*\* https://ai-code-review-backend-ycow.onrender.com
 
 
 
@@ -57,13 +57,13 @@ ai-code-review/
 │   │   ├── review.py           # trigger + fetch reviews
 │   │   └── report.py           # PDF generation + download
 │   ├── services/
-│   │   ├── openai\_service.py       # AI review pass
-│   │   ├── pylint\_service.py       # style/correctness analysis
-│   │   ├── bandit\_service.py       # security analysis
-│   │   ├── radon\_service.py        # complexity/maintainability
-│   │   └── documentation\_service.py # AI-written review summary
+│   │   ├── openai\\\_service.py       # AI review pass
+│   │   ├── pylint\\\_service.py       # style/correctness analysis
+│   │   ├── bandit\\\_service.py       # security analysis
+│   │   ├── radon\\\_service.py        # complexity/maintainability
+│   │   └── documentation\\\_service.py # AI-written review summary
 │   ├── utils/
-│   │   ├── file\_utils.py       # safe upload/zip handling
+│   │   ├── file\\\_utils.py       # safe upload/zip handling
 │   │   └── scoring.py          # weighted score formula
 │   ├── uploads/                # uploaded project files (gitignored)
 │   └── reports/                # generated PDFs (gitignored)
@@ -86,21 +86,21 @@ ai-code-review/
 **reviews** — id, project\_id, review\_score, summary, created\_at
 **review\_findings** — id, review\_id, severity, issue, explanation, suggestion, file\_name, line\_number
 
-(`storage\_path` was added to `projects` — the on-disk folder holding the
+(`storage\\\_path` was added to `projects` — the on-disk folder holding the
 uploaded files — since the analysis pipeline needs to locate them.)
 
 ## How a review works
 
 1. User uploads a `.py` file or a `.zip` (only `.py` files are extracted, with
 Zip-Slip protection).
-2. `POST /api/review/<project\_id>/run` walks every `.py` file and runs, per file:
+2. `POST /api/review/<project\\\_id>/run` walks every `.py` file and runs, per file:
 
    * **pylint** → style/correctness issues
    * **bandit** → security issues (hardcoded secrets, `shell=True`, weak hashes, etc.)
    * **radon** → cyclomatic complexity + maintainability index
    * **OpenAI** → design smells, logic bugs, and issues static tools miss
 3. All findings are normalized to one shape (`severity`, `issue`, `explanation`,
-`suggestion`, `file\_name`, `line\_number`, `source`) and stored.
+`suggestion`, `file\\\_name`, `line\\\_number`, `source`) and stored.
 4. A weighted, damped scoring formula (`utils/scoring.py`) converts findings
 into a 0–100 score so a handful of critical issues hurts more than dozens
 of minor style nits, without ever zeroing out.
@@ -110,6 +110,12 @@ alongside the score.
 table, downloadable from the project page.
 
 ## Local Setup
+
+
+
+> The app is already live at the link above — local setup below is only needed if you want to run it yourself, modify the code, or use your own OpenAI/Groq key instead of the demo instance's.
+
+
 
 ### Prerequisites
 
@@ -123,25 +129,25 @@ just lose the AI-review findings and get a rule-based summary instead)
 
 ```bash
 cd backend
-python -m venv venv \&\& source venv/bin/activate      # Windows: venv\\Scripts\\activate
+python -m venv venv \\\&\\\& source venv/bin/activate      # Windows: venv\\\\Scripts\\\\activate
 pip install -r requirements.txt
 
-createdb ai\_code\_review                                # or use an existing Postgres DB
+createdb ai\\\_code\\\_review                                # or use an existing Postgres DB
 
 cp .env.example .env
-# edit .env: set DATABASE\_URL, JWT\_SECRET\_KEY, SECRET\_KEY, OPENAI\_API\_KEY
+# edit .env: set DATABASE\\\_URL, JWT\\\_SECRET\\\_KEY, SECRET\\\_KEY, OPENAI\\\_API\\\_KEY
 
 python app.py                                          # runs on http://localhost:5000
 ```
 
-Tables are created automatically on first run via `db.create\_all()`.
+Tables are created automatically on first run via `db.create\\\_all()`.
 
 ### Frontend
 
 ```bash
 cd frontend
 npm install
-cp .env.example .env      # set VITE\_API\_URL if your backend isn't on localhost:5000
+cp .env.example .env      # set VITE\\\_API\\\_URL if your backend isn't on localhost:5000
 npm run dev                # runs on http://localhost:5173
 ```
 
@@ -157,15 +163,15 @@ Postgres instance and a web service running
 `gunicorn app:app --bind 0.0.0.0:$PORT`. In the Render dashboard:
 
 1. New → Blueprint → point at this repo.
-2. Set `CORS\_ORIGINS` to your deployed Vercel URL and `OPENAI\_API\_KEY` (both
+2. Set `CORS\\\_ORIGINS` to your deployed Vercel URL and `OPENAI\\\_API\\\_KEY` (both
 marked `sync: false` in the blueprint so Render prompts for them).
-3. Deploy — `SECRET\_KEY`/`JWT\_SECRET\_KEY` are auto-generated.
+3. Deploy — `SECRET\\\_KEY`/`JWT\\\_SECRET\\\_KEY` are auto-generated.
 
 ### Frontend → Vercel
 
 1. New Project → import the `frontend/` directory.
 2. Framework preset: Vite.
-3. Set `VITE\_API\_URL` to your Render backend URL.
+3. Set `VITE\\\_API\\\_URL` to your Render backend URL.
 4. Deploy — `vercel.json` handles SPA routing so React Router refreshes don't 404.
 
 ## API Reference
@@ -177,11 +183,11 @@ marked `sync: false` in the blueprint so Render prompts for them).
 |GET|`/api/auth/me`|Current user (requires auth)|
 |POST|`/api/upload`|Upload a `.py`/`.zip`, creates a project|
 |GET|`/api/upload`|List the current user's projects|
-|POST|`/api/review/<project\_id>/run`|Run the full analysis pipeline|
-|GET|`/api/review/<project\_id>`|List past reviews for a project|
-|GET|`/api/review/detail/<review\_id>`|Full review + findings|
-|POST|`/api/report/<review\_id>/generate`|Build the PDF|
-|GET|`/api/report/<review\_id>/download`|Download the PDF|
+|POST|`/api/review/<project\\\_id>/run`|Run the full analysis pipeline|
+|GET|`/api/review/<project\\\_id>`|List past reviews for a project|
+|GET|`/api/review/detail/<review\\\_id>`|Full review + findings|
+|POST|`/api/report/<review\\\_id>/generate`|Build the PDF|
+|GET|`/api/report/<review\\\_id>/download`|Download the PDF|
 
 All routes except register/login/health require `Authorization: Bearer <token>`.
 
@@ -193,7 +199,7 @@ PDF): pylint, bandit, and radon all fired correctly against real code, the
 scoring formula produced a sane 0–100 result, and the PDF rendered as a valid
 document. The frontend was built and compiled cleanly with Vite.
 PostgreSQL itself wasn't available in the build sandbox, so the smoke test
-ran against SQLite via `DATABASE\_URL` — the code path is identical for
+ran against SQLite via `DATABASE\\\_URL` — the code path is identical for
 Postgres since both go through the same SQLAlchemy engine; just point
-`DATABASE\_URL` at your Postgres instance to use it for real.
+`DATABASE\\\_URL` at your Postgres instance to use it for real.
 
