@@ -111,11 +111,7 @@ table, downloadable from the project page.
 
 ## Local Setup
 
-
-
 > The app is already live at the link above — local setup below is only needed if you want to run it yourself, modify the code, or use your own OpenAI/Groq key instead of the demo instance's.
-
-
 
 ### Prerequisites
 
